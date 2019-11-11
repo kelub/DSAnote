@@ -37,3 +37,13 @@ func TestHeapBuild(t *testing.T) {
 	heap.buildHeap()
 	fmt.Println(heap.base)
 }
+
+func TestHeapSort(t *testing.T) {
+	a := []int{0, 5, 4, 1, 6, 7, 3, 2, 8, 9}
+	heap := NewHeap(len(a))
+	heap.base = a
+	heap.cap = 9
+	heap.buildHeap()
+	heap.sort()
+	fmt.Println(heap.base)
+}

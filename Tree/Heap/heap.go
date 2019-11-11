@@ -46,18 +46,18 @@ func (h *Heap) remove() bool {
 	h.count--
 	index := 1
 	h.base[index] = h.base[h.count]
-	h.heapify(index)
+	h.heapify(index, h.cap)
 	return true
 }
 
-func (h *Heap) heapify(index int) {
+func (h *Heap) heapify(index int, cap int) {
 	for {
 		maxPos := index
 		// fmt.Println(index)
-		if (2*index <= h.cap) && (h.base[index] < h.base[2*index]) {
+		if (2*index <= cap) && (h.base[index] < h.base[2*index]) {
 			maxPos = 2 * index
 		}
-		if (2*index+1 <= h.cap) && (h.base[maxPos] < h.base[(2*index)+1]) {
+		if (2*index+1 <= cap) && (h.base[maxPos] < h.base[(2*index)+1]) {
 			maxPos = 2*index + 1
 		}
 		if index == maxPos {
@@ -71,11 +71,24 @@ func (h *Heap) heapify(index int) {
 	}
 }
 
+func (h *Heap) swap(a []int, x int, y int) {
+	temp := a[x]
+	a[x] = a[y]
+	a[y] = temp
+}
+
 //原地创建堆结构
 func (h *Heap) buildHeap() {
-	fmt.Println("firs ", h.base)
 	for i := h.cap / 2; i >= 1; i-- {
-		h.heapify(i)
-		fmt.Println("i", i, " ", h.base)
+		h.heapify(i, h.cap)
+	}
+}
+
+// 堆排序
+// 利用堆顶最大原则,类似选择排序方式
+func (h *Heap) sort() {
+	for i := h.cap; i >= 1; i-- {
+		h.swap(h.base,i,1)
+		h.heapify(1,i-1)
 	}
 }
