@@ -53,7 +53,6 @@ func (h *Heap) remove() bool {
 func (h *Heap) heapify(index int, cap int) {
 	for {
 		maxPos := index
-		// fmt.Println(index)
 		if (2*index <= cap) && (h.base[index] < h.base[2*index]) {
 			maxPos = 2 * index
 		}
@@ -85,7 +84,8 @@ func (h *Heap) buildHeap() {
 }
 
 // 堆排序
-// 利用堆顶最大原则,类似选择排序方式
+// 利用堆顶最大原则,类似选择排序方式,每次选择堆顶(最大值),交换数组最后元素。
+// 缩小堆容量，堆化(维持堆结构)，循环直到堆容量为一。
 func (h *Heap) sort() {
 	for i := h.cap; i >= 1; i-- {
 		h.swap(h.base,i,1)
