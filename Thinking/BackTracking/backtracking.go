@@ -81,3 +81,39 @@ func (p *BackPack)do(i,curw ,weight,n int, items []int){
 		p.do(i+1,curw+items[i],weight,n,items)
 	}
 }
+
+type Pattern struct {
+	matched 	bool
+}
+
+func (p *Pattern) match(text ,pattern []rune) bool{
+	p.matched = false
+	p.do(0,0,text,pattern,len(pattern),len(text))
+	return p.matched
+}
+
+// jsa19ks  j*k?s
+// do
+// text ,pattern 匹配字符串，正则表达式
+// plen 正则长度  pindex 当前正则表达式位置 textindex 匹配字符串当前位置
+func (p *Pattern)do(pindex,textindex int,text ,pattern []rune, plen ,tlen int){
+	if pindex == plen{  // 正则表达式结束退出
+		if textindex == tlen{  // 匹配字符串到头代表匹配成功
+			p.matched = true
+		}
+		return
+	}
+	// 匹配任意个字符
+	if string(pattern[pindex]) == "*"{
+		for i := textindex;i<tlen;i++{
+			p.do(pindex+1,i,text,pattern,plen,tlen)
+		}
+	}else if string(pattern[pindex]) == "?"{ 	// 匹配一个字符或者空
+		// 匹配0个字符
+		p.do(pindex+1,textindex,text,pattern,plen,tlen)
+		// 匹配一个字符
+		p.do(pindex+1,textindex+1,text,pattern,plen,tlen)
+	}else if textindex < tlen && pattern[pindex] == text[textindex]{  // 匹配纯字符串
+		p.do(pindex+1,textindex+1,text,pattern,plen,tlen)
+	}
+}
