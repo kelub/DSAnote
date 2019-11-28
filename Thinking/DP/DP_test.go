@@ -42,3 +42,17 @@ func Test_dpValue(t *testing.T) {
 	p.dpValue(p.weight, len(p.items))
 	fmt.Println(p.maxValues)
 }
+
+func Test_YH(t *testing.T) {
+	y := NewYH()
+	fmt.Println("y", y)
+	y.back(0, y.head, 0, y.layer)
+	fmt.Println("minPath", y.minPath)
+}
+
+func Test_YHDP(t *testing.T) {
+	y := NewYH()
+	fmt.Println("y", y)
+	y.dp(y.head, y.layer)
+	fmt.Println("minPath", y.minPath)
+}

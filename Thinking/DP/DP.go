@@ -1,5 +1,14 @@
 package DP
 
+import (
+	//"fmt"
+	//"math/rand"
+	//"time"
+	"fmt"
+	//"kelub/DSAnote/Queue"
+	//"math"
+)
+
 // 1,2,5,10,15,20,25,50
 type BackPack struct {
 	items  []int // 每个物品重量数组
@@ -153,4 +162,100 @@ func (p *BackPack) dpValue(weight, n int) {
 			p.maxValues = states[n-1][i]
 		}
 	}
+}
+
+type Node struct {
+	Value int
+	Left  *Node
+	Right *Node
+}
+
+type YH struct {
+	head    *Node
+	layer   int
+	minPath int
+
+	states []int
+}
+
+func NewYH() *YH {
+	node5 := &Node{5, nil, nil}
+	node7 := &Node{7, nil, nil}
+	node8 := &Node{8, nil, nil}
+	node2 := &Node{2, nil, nil}
+	node3 := &Node{3, nil, nil}
+	node4 := &Node{4, nil, nil}
+	node5.Left = node7
+	node5.Right = node8
+	node7.Left = node3
+	node7.Right = node2
+	node8.Left = node2
+	node8.Right = node4
+	return &YH{head: node5, layer: 3, minPath: 999}
+}
+
+func (y *YH) path(n int, head *Node, curTotalPath, layer int) {
+	if n == layer {
+		y.minPath = curTotalPath
+		fmt.Println(y.minPath)
+		return
+	}
+	//left
+	y.path(n+1, head.Left, curTotalPath+head.Value, layer)
+}
+
+// 暴力回溯法
+func (y *YH) do(n int, head *Node, curTotalPath, layer int) {
+	if n == layer {
+		if y.minPath > curTotalPath {
+			y.minPath = curTotalPath
+		}
+		return
+	}
+	//left
+	y.do(n+1, head.Left, curTotalPath+head.Value, layer)
+	//right
+	y.do(n+1, head.Right, curTotalPath+head.Value, layer)
+}
+
+func (y *YH) back(n int, head *Node, curTotalPath, layer int) {
+	// get init minPath
+	//y.path(n, head, curTotalPath, layer)
+	// 回溯
+	y.do(n, head, curTotalPath, layer)
+}
+
+func (y *YH) dp(head *Node, layer int) {
+	total := layer * (layer + 1) / 2
+	// 状态数组
+	y.states = make([]int, total, total)
+	for i := 0; i < total; i++ {
+		y.states[i] = -1
+	}
+	node := head
+	//queue := Queue.New(int64(paths))
+	// 初始化
+	y.states[0] = node.Value
+	y.dpdo(1, 0, 2, head.Left, total)
+	y.dpdo(2, 0, 2, head.Right, total)
+
+	fmt.Println("states", y.states)
+}
+
+func (y *YH) dpdo(n, pre, layer int, head *Node, total int) {
+	if layer == y.layer+1 {
+		return
+	}
+	v := y.states[pre] + head.Value
+	if y.states[n] == -1 || v < y.states[n] {
+		y.states[n] = v
+	}
+	// 到底更新最小路径
+	if head.Left == nil || head.Right == nil {
+		if y.minPath > y.states[n] {
+			y.minPath = y.states[n]
+		}
+	}
+	y.dpdo(n+layer, n, layer+1, head.Left, total)
+	y.dpdo(n+layer+1, n, layer+1, head.Right, total)
 }
