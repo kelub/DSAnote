@@ -63,3 +63,45 @@ func Test_DistBT_DPDO(t *testing.T) {
 	fmt.Println(d.minDist)
 	fmt.Println(d.mem)
 }
+
+func TestMaxIncSubf(t *testing.T) {
+	a := "2936517"
+	MaxIncSubf([]byte(a))
+}
+
+func Test_A(t *testing.T) {
+	a := "    D,   A"
+	fmt.Println(isPalindrome(a))
+}
+
+func isPalindrome(s string) bool {
+	b := []byte(s)
+	slen := len(s)
+	head, end := 0, slen-1
+	for head < end {
+		fmt.Println("head, end", head, end, b)
+		if 'A' <= b[head] && b[head] <= 'Z' {
+			b[head] += 'a' - 'A'
+		}
+		if 'A' <= b[end] && b[end] <= 'Z' {
+			b[end] += 'a' - 'A'
+		}
+		fmt.Println(!((b[head] >= '0' && b[head] <= '9') || (b[head] >= 'a' && b[head] <= 'z')))
+		if !((b[head] >= '0' && b[head] <= '9') || (b[head] >= 'a' && b[head] <= 'z')) {
+			head++
+			continue
+		}
+		if !((b[end] >= '0' && b[end] <= '9') || (b[end] >= 'a' && b[end] <= 'z')) {
+			end--
+			continue
+		}
+		if b[head] == b[end] {
+			head++
+			end--
+			continue
+		} else {
+			return false
+		}
+	}
+	return true
+}
