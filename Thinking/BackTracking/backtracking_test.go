@@ -34,9 +34,8 @@ func TestPattern(t *testing.T) {
 }
 
 func TestPartition(t *testing.T) {
-	a := "113456"
+	a := "ababbbabbaba"
 	p := Partition(a)
-	fmt.Println(p.results)
-	//fmt.Println(a[0:6])
+	fmt.Println(p)
 	//fmt.Println(a[5:])
 }

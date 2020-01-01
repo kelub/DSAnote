@@ -118,48 +118,66 @@ func (p *Pattern) do(pindex, textindex int, text, pattern []rune, plen, tlen int
 }
 
 //分割回文串
-func Partition(s string) *P {
+func Partition(s string) [][]string {
 	p := &P{
 		slen:    len(s),
-		result:  make([][]byte, 0),
-		results: make([][][]byte, 0),
+		results: make([][]string, 0),
+		mem:     make([][]bool, len(s)+1),
 	}
-	for i := 1; i < p.slen; i++ {
-		p.spilt([]byte(s), i)
+	result := make([]string, 0)
+	for i, _ := range p.mem {
+		k := make([]bool, len(s)+1)
+		p.mem[i] = k
 	}
-	return p
+	p.spilt(s, 0, result)
+	return p.results
 }
 
 type P struct {
 	slen    int
-	result  [][]byte
-	results [][][]byte
+	results [][]string
+
+	// mem[i][j] 值代表 从i-j 是否是回文
+	mem [][]bool
+
+	test int
 }
 
-func (p *P) spilt(s []byte, indes int) {
-	if indes >= p.slen-1 {
-		temp := make([][]byte, len(p.result))
-		copy(temp, p.result)
-		p.results = append(p.results, temp)
-		p.result = make([][]byte, 0)
+func (p *P) spilt(s string, index int, res []string) {
+	result := make([]string, len(res))
+	copy(result, res)
+	if index >= p.slen {
+		p.results = append(p.results, result)
 		return
 	}
-	fmt.Println("s", s[0:indes], !p.isPalindrome(s[0:indes]))
-	if !p.isPalindrome(s[0:indes]) {
-		return
-	}
-	p.result = append(p.result, s[0:indes])
 
-	for i := 1; i < len(s[:indes]); i++ {
-		p.spilt(s[indes:], i)
+	for i := index + 1; i <= p.slen; i++ {
+		if !p.mem[index][i] {
+			if p.isPalindrome(s[index:i]) {
+				p.mem[index][i] = true
+				r := append(result, s[index:i])
+				p.spilt(s, i, r)
+				if i > 10 {
+					return
+				}
+			}
+		} else {
+			r := append(result, s[index:i])
+			p.spilt(s, i, r)
+			if i > 10 {
+				return
+			}
+		}
 	}
+	return
 }
 
-func (p *P) isPalindrome(s []byte) bool {
-	slen := len(s)
+func (p *P) isPalindrome(s string) bool {
+	b := []byte(s)
+	slen := len(b)
 	head, end := 0, slen-1
 	for head < end {
-		if s[head] == s[end] {
+		if b[head] == b[end] {
 			head++
 			end--
 			continue
